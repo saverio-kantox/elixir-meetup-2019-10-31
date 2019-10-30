@@ -1,0 +1,16 @@
+localhost {
+  # log stdout
+
+  proxy / app:4000 {
+    websocket
+    transparent
+
+    # spoof whatever jwt plugin would do with the x-amzn-oidc-data header:
+    # jwt {
+    #   token_source header x-amzn-oidc-data
+    # }
+    header_upstream +Token-Claim-Sub "1234567890"
+    header_upstream +Token-Claim-Name "name"
+    header_upstream +Token-Claim-Email "alias@example.com"
+  }
+}
