@@ -30,10 +30,12 @@ defmodule AdminThing.View do
     text = Keyword.get(opts, :label, Macro.camelize(key))
 
     params =
-      case qp["sort"] do
-        ^key -> qp |> put_in(~w[page number], 1) |> put_in(~w[sort], "-#{key}")
-        _ -> qp |> put_in(~w[page number], 1) |> put_in(~w[sort], key)
-      end
+      qp
+      |> update_in(~w[sort], fn
+        ^key -> "-#{key}"
+        _ -> key
+      end)
+      |> put_in(~w[page number], 1)
 
     content =
       case qp["sort"] do

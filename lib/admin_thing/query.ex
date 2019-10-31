@@ -6,18 +6,20 @@ defmodule AdminThing.Query do
 
   defmacro __using__(_opts \\ []) do
     quote do
-      import Ecto.Query, warn: false
+      import Ecto.Query
 
       @behavior AdminThing.Query
       @before_compile AdminThing.Query
 
       def list(params \\ %{}) do
-        query(params)
+        params
+        |> query()
         |> repo.all()
       end
 
       def get_page_count(params \\ %{}) do
-        query(params)
+        params
+        |> query()
         |> exclude(:limit)
         |> exclude(:offset)
         |> exclude(:order_by)

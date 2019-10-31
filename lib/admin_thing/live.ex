@@ -26,14 +26,8 @@ defmodule AdminThing.Live do
   def prepare_params(params) do
     params
     |> Map.put_new("page", %{})
-    |> update_in(~w[page number], fn
-      nil -> 1
-      n -> String.to_integer(n)
-    end)
-    |> update_in(~w[page size], fn
-      nil -> 5
-      n -> String.to_integer(n)
-    end)
+    |> Map.update("page", nil, &Map.update(&1, "number", 1, fn x -> String.to_integer(x) end))
+    |> Map.update("page", nil, &Map.update(&1, "size", 5, fn x -> String.to_integer(x) end))
   end
 
   def load_data(socket, params, query_module, opts \\ []) do
