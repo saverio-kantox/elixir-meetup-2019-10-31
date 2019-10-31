@@ -17,6 +17,11 @@ defmodule ExMeetupWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    scope "/admin" do
+      resources "/users", UserController
+      resources "/payments", PaymentController
+    end
   end
 
   # Other scopes may use custom stacks.

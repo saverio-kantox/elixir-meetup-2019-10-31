@@ -1,0 +1,28 @@
+<h1>Show Payment</h1>
+
+<ul>
+
+  <li>
+    <strong>Amount:</strong>
+    <%= @payment.amount %>
+  </li>
+
+  <li>
+    <strong>Currency:</strong>
+    <%= @payment.currency %>
+  </li>
+
+  <li>
+    <strong>Value date:</strong>
+    <%= @payment.value_date %>
+  </li>
+
+  <li>
+    <strong>State:</strong>
+    <%= @payment.state %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.payment_path(@conn, :edit, @payment) %></span>
+<span><%= link "Back", to: Routes.payment_path(@conn, :index) %></span>

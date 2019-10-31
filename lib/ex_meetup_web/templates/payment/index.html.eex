@@ -1,0 +1,32 @@
+<h1>Listing Payments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Currency</th>
+      <th>Value date</th>
+      <th>State</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for payment <- @payments do %>
+    <tr>
+      <td><%= payment.amount %></td>
+      <td><%= payment.currency %></td>
+      <td><%= payment.value_date %></td>
+      <td><%= payment.state %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.payment_path(@conn, :show, payment) %></span>
+        <span><%= link "Edit", to: Routes.payment_path(@conn, :edit, payment) %></span>
+        <span><%= link "Delete", to: Routes.payment_path(@conn, :delete, payment), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Payment", to: Routes.payment_path(@conn, :new) %></span>
