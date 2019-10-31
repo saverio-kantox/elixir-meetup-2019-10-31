@@ -17,8 +17,37 @@ defmodule ExMeetup.Admin do
       [%User{}, ...]
 
   """
-  def list_users do
-    Repo.all(User)
+  def list_users(params \\ %{}) do
+    query_users(params)
+    |> Repo.all()
+  end
+
+  def get_user_page_count(params \\ %{}) do
+    IO.inspect(params)
+
+    case Repo.one(
+           from u in (query_users(params) |> exclude(:limit) |> exclude(:offset)),
+             select: count(u.id, :distinct)
+         ) do
+      0 -> 1
+      n -> Integer.floor_div(n - 1, get_in(params, ~w[page size])) + 1
+    end
+  end
+
+  defp query_users(%{"page" => %{"size" => page_size, "number" => page_number}}) do
+    from u in User, limit: ^page_size, offset: (^page_size - 1) * ^page_number
+  end
+
+  defp query_users(%{"page" => %{"size" => _}} = params) do
+    params |> put_in(~w[page number], 1) |> query_users()
+  end
+
+  defp query_users(%{"page" => %{}} = params) do
+    params |> put_in(~w[page size], 5) |> query_users()
+  end
+
+  defp query_users(%{} = params) do
+    params |> put_in(~w[page], %{}) |> query_users()
   end
 
   @doc """

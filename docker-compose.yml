@@ -4,6 +4,8 @@ services:
     image: postgres:alpine
     environment:
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
   caddy:
     image: abiosoft/caddy:no-stats
     volumes:
@@ -25,6 +27,8 @@ services:
       ERL_AFLAGS: "-kernel shell_history enabled"
       DATABASE_HOSTNAME: db
     command: sh -c "sleep infinity"
+    # ports:
+    #   - "4000:4000"
 volumes:
   elixir_build:
   elixir_deps:
