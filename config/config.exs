@@ -15,7 +15,8 @@ config :ex_meetup, ExMeetupWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "kL9XTPbplPzvyoX1huSoTV9CK6IW/25aN3QKCDJV+o/0bGykqq9dvoGzB0xqgnKR",
   render_errors: [view: ExMeetupWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ExMeetup.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: ExMeetup.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [signing_salt: "lM7xof5i"]
 
 # Configures Elixir's Logger
 config :logger, :console,
