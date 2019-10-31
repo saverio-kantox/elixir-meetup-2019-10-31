@@ -25,10 +25,13 @@ defmodule ExMeetup.Admin do
   def get_user_page_count(params \\ %{}) do
     IO.inspect(params)
 
-    case Repo.one(
-           from u in (query_users(params) |> exclude(:limit) |> exclude(:offset)),
-             select: count(u.id, :distinct)
-         ) do
+    query_users(params)
+    |> exclude(:limit)
+    |> exclude(:offset)
+    |> exclude(:order_by)
+    |> select([u], count(u.id, :distinct))
+    |> Repo.one()
+    |> case do
       0 -> 1
       n -> Integer.floor_div(n - 1, get_in(params, ~w[page size])) + 1
     end
@@ -56,7 +59,15 @@ defmodule ExMeetup.Admin do
   defp sort(queryable, "-" <> key), do: do_sort(queryable, key, :desc)
   defp sort(queryable, key), do: do_sort(queryable, key, :asc)
 
-  defp do_sort(q, key, direction), do: q
+  # specific sorting behavior, sort on email's hostname
+  defp do_sort(queryable, "email", direction) do
+    from u in queryable, order_by: [{^direction, fragment("SPLIT_PART(email, '@', 2)")}]
+  end
+
+  # default sorting behavior, sort on given column
+  defp do_sort(queryable, key, direction) do
+    from u in queryable, order_by: ^[{direction, String.to_existing_atom(key)}]
+  end
 
   @doc """
   Gets a single user.
