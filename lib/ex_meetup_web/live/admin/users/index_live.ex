@@ -28,4 +28,21 @@ defmodule ExMeetupWeb.Admin.Users.IndexLive do
     socket = socket |> assign(users: users, query_params: params, total_pages: total_pages)
     {:noreply, socket}
   end
+
+  def handle_event("filter", form_content, socket) do
+    old_query_params = socket.assigns[:query_params]
+
+    filters = for {k, v} <- form_content["filter"], k != "_target", v != "", into: %{}, do: {k, v}
+
+    new_query_params =
+      old_query_params
+      |> Map.put("filter", filters)
+      |> Map.put_new("page", %{})
+      |> put_in(~w[page number], 1)
+
+    {:noreply,
+     live_redirect(socket,
+       to: ExMeetupWeb.Router.Helpers.live_path(socket, __MODULE__, new_query_params)
+     )}
+  end
 end

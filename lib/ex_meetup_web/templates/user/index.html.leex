@@ -5,11 +5,18 @@
 <table>
   <thead>
     <tr>
-      <th><%= sort_link("Name", @query_params, key: "name") %></th>
-      <th><%= sort_link("Email", @query_params, key: "email") %></th>
+      <th><%= sort_link("name", @query_params, label: "Name") %></th>
+      <th><%= sort_link("email", @query_params, label: "Email") %></th>
 
       <th></th>
     </tr>
+      <form phx-change="filter">
+    <tr>
+        <td><%= filter("name", @query_params) %></td>
+        <td><%= filter("email", @query_params) %></td>
+        <td></td>
+    </tr>
+      </form>
   </thead>
   <tbody>
 <%= for user <- @users do %>

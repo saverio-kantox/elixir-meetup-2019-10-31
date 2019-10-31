@@ -23,8 +23,8 @@ defmodule ExMeetupWeb.UserView do
     end
   end
 
-  def sort_link(text, qp, opts) do
-    key = Keyword.fetch!(opts, :key)
+  def sort_link(key, qp, opts \\ []) do
+    text = Keyword.get(opts, :label, Macro.camelize(key))
 
     params =
       case qp["sort"] do
@@ -39,5 +39,9 @@ defmodule ExMeetupWeb.UserView do
     end
 
     live_link(content, to: "?" <> encode(params))
+  end
+
+  def filter(key, qp, opts \\ []) do
+    text_input(:filter, key, value: get_in(qp, ["filter", key]), phx_debounce: 200)
   end
 end
