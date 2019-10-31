@@ -1,0 +1,37 @@
+<h1>Listing Users</h1>
+
+<%= pagination(@query_params, @total_pages) %>
+
+<table>
+  <thead>
+    <tr>
+      <th><%= sort_link("name", @query_params, label: "Name") %></th>
+      <th><%= sort_link("email", @query_params, label: "Email") %></th>
+
+      <th></th>
+    </tr>
+      <form phx-change="filter">
+    <tr>
+        <td><%= filter("name", @query_params) %></td>
+        <td><%= filter("email", @query_params) %></td>
+        <td></td>
+    </tr>
+      </form>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.name %></td>
+      <td><%= user.email %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.user_path(ExMeetupWeb.Endpoint, :show, user) %></span>
+        <span><%= link "Edit", to: Routes.user_path(ExMeetupWeb.Endpoint, :edit, user) %></span>
+        <span><%= link "Delete", to: Routes.user_path(ExMeetupWeb.Endpoint, :delete, user), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New User", to: Routes.user_path(ExMeetupWeb.Endpoint, :new) %></span>

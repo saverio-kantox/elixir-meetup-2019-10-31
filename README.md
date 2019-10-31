@@ -1,20 +1,6 @@
 # ExMeetup
 
-To start your Phoenix server:
+## Step 1 - generating schemas
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+- `mix phx.gen.html Admin User users name:string email:string --binary-id`
+- `mix phx.gen.html Admin Payment payments amount:decimal currency:string value_date:date state:string user_id:references:users --binary-id`
