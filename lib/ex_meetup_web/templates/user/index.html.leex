@@ -5,8 +5,8 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Email</th>
+      <th><%= sort_link("Name", @query_params, key: "name") %></th>
+      <th><%= sort_link("Email", @query_params, key: "email") %></th>
 
       <th></th>
     </tr>

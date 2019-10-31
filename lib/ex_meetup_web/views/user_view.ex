@@ -22,4 +22,22 @@ defmodule ExMeetupWeb.UserView do
       end)
     end
   end
+
+  def sort_link(text, qp, opts) do
+    key = Keyword.fetch!(opts, :key)
+
+    params =
+      case qp["sort"] do
+        ^key -> qp |> put_in(~w[page number], 1) |> put_in(~w[sort], "-#{key}")
+        _ -> qp |> put_in(~w[page number], 1) |> put_in(~w[sort], key)
+      end
+
+    content = case qp["sort"] do
+      ^key -> "#{text} 🔼"
+      "-" <> ^key -> "#{text} 🔽"
+      _ -> text
+    end
+
+    live_link(content, to: "?" <> encode(params))
+  end
 end
