@@ -1,5 +1,6 @@
 defmodule ExMeetupWeb.Router do
   use ExMeetupWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -19,6 +20,7 @@ defmodule ExMeetupWeb.Router do
     get "/", PageController, :index
 
     scope "/admin" do
+      live "/users", Admin.Users.IndexLive
       resources "/users", UserController
       resources "/payments", PaymentController
     end
