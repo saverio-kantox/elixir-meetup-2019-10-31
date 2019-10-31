@@ -1,4 +1,5 @@
 defmodule ExMeetupWeb.Router do
+  @moduledoc false
   use ExMeetupWeb, :router
 
   pipeline :browser do

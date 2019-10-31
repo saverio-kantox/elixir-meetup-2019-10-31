@@ -10,7 +10,13 @@ defmodule ExMeetup.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_file: {:no_warn, ".dialyzer/plts/dialyzer.plt"},
+        plt_add_deps: :transitive,
+        plt_add_apps: [:mix],
+        ignore_warnings: ".dialyzer/ignore.exs"
+      ]
     ]
   end
 
@@ -44,7 +50,9 @@ defmodule ExMeetup.MixProject do
       {:faker, "~> 0.13", only: ~w[dev test]a},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:credo, "~> 1.0", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev, :test], runtime: false}
     ]
   end
 

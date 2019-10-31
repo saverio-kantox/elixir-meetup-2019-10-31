@@ -17,6 +17,8 @@ defmodule ExMeetupWeb do
   and import those modules here.
   """
 
+  @spec controller :: Macro.t()
+  @doc "Produces an AST for the controller"
   def controller do
     quote do
       use Phoenix.Controller, namespace: ExMeetupWeb
@@ -28,6 +30,8 @@ defmodule ExMeetupWeb do
     end
   end
 
+  @spec view :: Macro.t()
+  @doc "Produces an AST for the view"
   def view do
     quote do
       use Phoenix.View,
@@ -49,6 +53,8 @@ defmodule ExMeetupWeb do
     end
   end
 
+  @spec router :: Macro.t()
+  @doc "Produces an AST for the router"
   def router do
     quote do
       use Phoenix.Router
@@ -58,6 +64,8 @@ defmodule ExMeetupWeb do
     end
   end
 
+  @spec channel :: Macro.t()
+  @doc "Produces an AST for the channel"
   def channel do
     quote do
       use Phoenix.Channel
