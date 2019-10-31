@@ -1,4 +1,8 @@
 defmodule AdminThing.Live do
+  @moduledoc """
+  Use this module to ease producing of filtered and/or paginated live views.
+  """
+  @doc false
   defmacro __using__(opts \\ []) do
     routes = Keyword.fetch!(opts, :routes)
 
@@ -23,6 +27,11 @@ defmodule AdminThing.Live do
     end
   end
 
+  @typedoc "The map representing the query params."
+  @type params :: %{binary() => any()}
+
+  @spec prepare_params(params :: params()) :: params()
+  @doc "Updates params by putting the default values into, if needed."
   def prepare_params(params) do
     params
     |> Map.put_new("page", %{})
@@ -36,6 +45,13 @@ defmodule AdminThing.Live do
     end)
   end
 
+  @spec load_data(
+          socket :: any(),
+          params :: params(),
+          query_module :: module(),
+          opts :: keyword()
+        ) :: any()
+  @doc "Loads the data into the socket."
   def load_data(socket, params, query_module, opts \\ []) do
     params = prepare_params(params)
     records = query_module.list(params)

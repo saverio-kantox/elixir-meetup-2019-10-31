@@ -1,7 +1,11 @@
 defmodule ExMeetup.Admin.UserQuery do
+  @moduledoc false
   use AdminThing.Query
 
+  @impl AdminThing.Query
   def base_queryable(), do: ExMeetup.Admin.User
+
+  @impl AdminThing.Query
   def repo(), do: ExMeetup.Repo
 
   # specific sorting behavior, sort on email's hostname

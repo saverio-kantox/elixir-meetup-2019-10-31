@@ -1,21 +1,29 @@
 defmodule AdminThing.Query do
+  @moduledoc """
+  The behaviour and the default implementation scaffold.
+  """
   @callback base_queryable() :: Ecto.Queryable.t()
   @callback repo() :: term()
 
   import Ecto.Query, warn: false
 
+  @doc false
   defmacro __using__(_opts \\ []) do
-    quote do
+    quote generated: true do
       import Ecto.Query, warn: false
 
-      @behavior AdminThing.Query
+      @behaviour AdminThing.Query
       @before_compile AdminThing.Query
 
+      @spec list(params :: AdminThing.Live.params()) :: [struct()]
+      @doc "Lists all the records, filtered and paginated according to the params passed."
       def list(params \\ %{}) do
         query(params)
         |> repo.all()
       end
 
+      @spec get_page_count(params :: AdminThing.Live.params()) :: non_neg_integer()
+      @doc "Returns the number of pages."
       def get_page_count(params \\ %{}) do
         query(params)
         |> exclude(:limit)
@@ -29,6 +37,7 @@ defmodule AdminThing.Query do
         end
       end
 
+      @spec query(params :: AdminThing.Live.params()) :: [struct()]
       defp query(params) do
         base_queryable()
         |> AdminThing.Query.paginate(Map.get(params, "page"))
@@ -41,7 +50,7 @@ defmodule AdminThing.Query do
   @doc """
   Add fallback implementations for sort and filter.
   """
-  defmacro __before_compile__(_) do
+  defmacro __before_compile__(_env) do
     quote do
       defp do_sort(queryable, {key, direction}) do
         from u in queryable, order_by: ^[{direction, key}]
@@ -53,6 +62,8 @@ defmodule AdminThing.Query do
     end
   end
 
+  @spec paginate(queryable :: any(), params :: nil | AdminThing.Live.params()) :: any()
+  @doc "Performs an actual pagination."
   def paginate(queryable, nil), do: queryable
 
   def paginate(queryable, %{} = param) do
@@ -61,6 +72,12 @@ defmodule AdminThing.Query do
     from u in queryable, limit: ^page_size, offset: ^((page_number - 1) * page_size)
   end
 
+  @spec sort(
+          queryable :: any(),
+          params :: nil | AdminThing.Live.params(),
+          cb :: (any(), {atom(), atom()} -> any())
+        ) :: any()
+  @doc "Performs an actual sorting."
   def sort(queryable, nil, _), do: queryable
   def sort(queryable, "", _), do: queryable
 
@@ -69,6 +86,12 @@ defmodule AdminThing.Query do
 
   def sort(queryable, key, cb), do: cb.(queryable, {String.to_existing_atom(key), :asc})
 
+  @spec filter(
+          queryable :: any(),
+          params :: nil | AdminThing.Live.params(),
+          cb :: (any(), {atom(), atom()} -> any())
+        ) :: any()
+  @doc "Performs an actual filtering."
   def filter(queryable, nil, _), do: queryable
 
   def filter(queryable, %{} = filters, cb) do

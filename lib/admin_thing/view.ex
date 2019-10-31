@@ -1,10 +1,13 @@
 defmodule AdminThing.View do
+  @moduledoc "The scaffold implementation of the `Phoenix.LiveView`."
   import Plug.Conn.Query, only: [encode: 1]
   use Phoenix.HTML
 
   import Phoenix.LiveView,
     only: [live_render: 2, live_render: 3, live_link: 1, live_link: 2]
 
+  @spec pagination(qp :: AdminThing.Live.params(), total_pages :: non_neg_integer()) :: any()
+  @doc "Implements a default pagination."
   def pagination(qp, total_pages) do
     current_page = get_in(qp, ~w[page number]) || 1
 
@@ -26,6 +29,8 @@ defmodule AdminThing.View do
     end
   end
 
+  @spec sort_link(key :: any(), qp :: AdminThing.Live.params(), opts :: keyword()) :: any()
+  @doc "Implements a sort link."
   def sort_link(key, qp, opts \\ []) do
     text = Keyword.get(opts, :label, Macro.camelize(key))
 
@@ -45,7 +50,9 @@ defmodule AdminThing.View do
     live_link(content, to: "?" <> encode(params))
   end
 
-  def filter(key, qp, opts \\ []) do
+  @spec filter(key :: any(), qp :: AdminThing.Live.params(), opts :: keyword()) :: any()
+  @doc "Implements a filter."
+  def filter(key, qp, _opts \\ []) do
     text_input(:filter, key, value: get_in(qp, ["filter", key]), phx_debounce: 100)
   end
 end
