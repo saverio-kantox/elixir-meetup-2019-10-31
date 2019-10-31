@@ -34,21 +34,29 @@ defmodule ExMeetup.Admin do
     end
   end
 
-  defp query_users(%{"page" => %{"size" => page_size, "number" => page_number}}) do
-    from u in User, limit: ^page_size, offset: (^page_size - 1) * ^page_number
+  defp query_users(params) do
+    page_size = get_in(params, ~w[page size])
+    page_number = get_in(params, ~w[page number])
+
+    User
+    |> paginate(Map.get(params, "page"))
+    |> sort(Map.get(params, "sort"))
   end
 
-  defp query_users(%{"page" => %{"size" => _}} = params) do
-    params |> put_in(~w[page number], 1) |> query_users()
+  defp paginate(queryable, nil), do: queryable
+
+  defp paginate(queryable, %{} = param) do
+    page_size = Map.get(param, "size", 5)
+    page_number = Map.get(param, "number", 1)
+    from u in queryable, limit: ^page_size, offset: (^page_size - 1) * ^page_number
   end
 
-  defp query_users(%{"page" => %{}} = params) do
-    params |> put_in(~w[page size], 5) |> query_users()
-  end
+  defp sort(queryable, nil), do: queryable
+  defp sort(queryable, ""), do: queryable
+  defp sort(queryable, "-" <> key), do: do_sort(queryable, key, :desc)
+  defp sort(queryable, key), do: do_sort(queryable, key, :asc)
 
-  defp query_users(%{} = params) do
-    params |> put_in(~w[page], %{}) |> query_users()
-  end
+  defp do_sort(q, key, direction), do: q
 
   @doc """
   Gets a single user.
