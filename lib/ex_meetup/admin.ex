@@ -18,68 +18,11 @@ defmodule ExMeetup.Admin do
 
   """
   def list_users(params \\ %{}) do
-    query_users(params)
-    |> Repo.all()
+    ExMeetup.Admin.UserQuery.list(params)
   end
 
   def get_user_page_count(params \\ %{}) do
-    query_users(params)
-    |> exclude(:limit)
-    |> exclude(:offset)
-    |> exclude(:order_by)
-    |> select([u], count(u.id, :distinct))
-    |> Repo.one()
-    |> case do
-      0 -> 1
-      n -> Integer.floor_div(n - 1, get_in(params, ~w[page size])) + 1
-    end
-  end
-
-  defp query_users(params) do
-    page_size = get_in(params, ~w[page size])
-    page_number = get_in(params, ~w[page number])
-
-    User
-    |> paginate(Map.get(params, "page"))
-    |> sort(Map.get(params, "sort"))
-    |> filter(Map.get(params, "filter"))
-  end
-
-  defp paginate(queryable, nil), do: queryable
-
-  defp paginate(queryable, %{} = param) do
-    page_size = Map.get(param, "size", 5)
-    page_number = Map.get(param, "number", 1)
-    from u in queryable, limit: ^page_size, offset: ^((page_number - 1) * page_size)
-  end
-
-  defp sort(queryable, nil), do: queryable
-  defp sort(queryable, ""), do: queryable
-  defp sort(queryable, "-" <> key), do: do_sort(queryable, {key, :desc})
-  defp sort(queryable, key), do: do_sort(queryable, {key, :asc})
-
-  # specific sorting behavior, sort on email's hostname
-  defp do_sort(queryable, {"email", direction}) do
-    from u in queryable, order_by: [{^direction, fragment("SPLIT_PART(email, '@', 2)")}]
-  end
-
-  # default sorting behavior, sort on given column
-  defp do_sort(queryable, {key, direction}) do
-    from u in queryable, order_by: ^[{direction, String.to_existing_atom(key)}]
-  end
-
-  defp filter(queryable, nil), do: queryable
-
-  defp filter(queryable, %{} = filters) do
-    Enum.reduce(filters, queryable, &do_filter(&2, &1))
-  end
-
-  defp do_filter(queryable, {key, "*" <> value}) do
-    from u in queryable, where: ilike(field(u, ^String.to_existing_atom(key)), ^"%#{value}%")
-  end
-
-  defp do_filter(queryable, {key, value}) do
-    from u in queryable, where: ^[{String.to_existing_atom(key), value}]
+    ExMeetup.Admin.UserQuery.get_page_count(params)
   end
 
   @doc """
