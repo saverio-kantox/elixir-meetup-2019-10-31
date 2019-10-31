@@ -17,6 +17,8 @@ defmodule ExMeetupWeb do
   and import those modules here.
   """
 
+  @spec controller :: Macro.t()
+  @doc "Produces an AST for the controller"
   def controller do
     quote do
       use Phoenix.Controller, namespace: ExMeetupWeb
@@ -24,9 +26,12 @@ defmodule ExMeetupWeb do
       import Plug.Conn
       import ExMeetupWeb.Gettext
       alias ExMeetupWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Controller
     end
   end
 
+  @spec view :: Macro.t()
+  @doc "Produces an AST for the view"
   def view do
     quote do
       use Phoenix.View,
@@ -42,17 +47,25 @@ defmodule ExMeetupWeb do
       import ExMeetupWeb.ErrorHelpers
       import ExMeetupWeb.Gettext
       alias ExMeetupWeb.Router.Helpers, as: Routes
+
+      import Phoenix.LiveView,
+        only: [live_render: 2, live_render: 3, live_link: 1, live_link: 2]
     end
   end
 
+  @spec router :: Macro.t()
+  @doc "Produces an AST for the router"
   def router do
     quote do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
+  @spec channel :: Macro.t()
+  @doc "Produces an AST for the channel"
   def channel do
     quote do
       use Phoenix.Channel
